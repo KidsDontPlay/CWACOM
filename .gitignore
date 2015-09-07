@@ -1,1 +1,12 @@
-/bin/
+## gradle
+/.gradle
+/build
+
+## eclipse
+/.settings
+/.metadata
+/.classpath
+/.project
+/bin
+/eclipse
+

@@ -1,3 +1,0 @@
-INDEX VERSION 1.127+/home/mileo/Dokumente/mods/cwacom/CWACOM/eclipse/.metadata/.plugins/org.eclipse.jdt.core
-3765020915.index
-208370467.index
