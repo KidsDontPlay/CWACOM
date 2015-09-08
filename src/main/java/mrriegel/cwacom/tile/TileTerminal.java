@@ -1,33 +1,27 @@
 package mrriegel.cwacom.tile;
 
 import java.util.Random;
-import java.util.Vector;
 
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
 import mrriegel.cwacom.CWACOM;
-import mrriegel.cwacom.init.ModItems;
-import mrriegel.cwacom.util.BlockLocation;
 import mrriegel.cwacom.util.RWLUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemFood;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyReceiver;
 
 public class TileTerminal extends TileEntity implements IEnergyReceiver {
-	private Integer x, y, z;
-	private EnergyStorage en = new EnergyStorage(100000, 1000, 0);
-	private ItemStack stack;
+	private EnergyStorage en = new EnergyStorage(200000, 1000, 0);
+	private TileFldsmdfr tf;
+	private int tfX, tfY, tfZ;
 
 	public TileTerminal() {
 		super();
@@ -36,104 +30,90 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		x = tag.getInteger("x");
-		y = tag.getInteger("y");
-		z = tag.getInteger("z");
+		tfX = tag.getInteger("tfX");
+		tfY = tag.getInteger("tfY");
+		tfZ = tag.getInteger("tfZ");
 		en.readFromNBT(tag);
-
-		NBTTagCompound st = (NBTTagCompound) tag.getTag("stack");
-		stack = ItemStack.loadItemStackFromNBT(st);
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
-		if (x != null)
-			tag.setInteger("x", x);
-		if (y != null)
-			tag.setInteger("y", y);
-		if (z != null)
-			tag.setInteger("z", z);
+		tag.setInteger("tfX", tfX);
+		tag.setInteger("tfY", tfY);
+		tag.setInteger("tfZ", tfZ);
 		en.writeToNBT(tag);
-
-		NBTTagCompound st = new NBTTagCompound();
-		if (stack != null)
-			stack.writeToNBT(st);
-
-		tag.setTag("stack", st);
 	}
 
 	@Override
 	public void updateEntity() {
-		if (worldObj.isRemote)
-			return;
-		// EntityItem ei = new EntityItem(worldObj, xCoord + 0.5D, yCoord +
-		// 0.5D,
-		// zCoord + 0.5D, new ItemStack(Items.cooked_porkchop));
-		// worldObj.spawnEntityInWorld(ei);
-		// ei.setPosition(ei.posX, ei.posY, ei.posZ);
-		// System.out.println("num: " + ei.getEntityItem().stackSize);
-		Vector<EntityPlayer> lis = new Vector<EntityPlayer>();
-		for (World w : MinecraftServer.getServer().worldServers)
-			for (Object o : w.playerEntities) {
-				EntityPlayer p = (EntityPlayer) o;
-				lis.add(p);
-			}
-		for (EntityPlayer player : lis) {
-			// Chunk c = worldObj.getChunkFromBlockCoords(
-			// RWLUtils.double2int(player.posX),
-			// RWLUtils.double2int(player.posZ));
 
-			// for (int i = c.xPosition * 16; i < c.xPosition * 16 + 16; i++) {
-			// for (int j = c.zPosition * 16; j < c.zPosition * 16 + 16; j++) {
-			if (new Random().nextInt(5) == 2) {
-				EntityItem ei = new EntityItem(worldObj, player.posX,
-						player.posY, player.posZ, /*new ItemStack(Items.golden_apple)*/CWACOM.foodList.get(5));
-				worldObj.spawnEntityInWorld(ei);
-				System.out.println("num: " + ei.getEntityItem().stackSize);
-				// }
-				// }
+		if (tf == null || tf.xCoord != tfX || tf.yCoord != tfY
+				|| tf.zCoord != tfZ)
+			if (worldObj.getTileEntity(tfX, tfY, tfZ) instanceof TileFldsmdfr)
+				tf = (TileFldsmdfr) worldObj.getTileEntity(tfX, tfY, tfZ);
+		if (worldObj.getTileEntity(tfX, tfY, tfZ) == null
+				|| (worldObj.getTileEntity(tfX, tfY, tfZ) != null)
+				&& !(worldObj.getTileEntity(tfX, tfY, tfZ) instanceof TileFldsmdfr)) {
+			tfX = xCoord;
+			tfY = yCoord;
+			tfZ = zCoord;
+			tf = null;
+		}
+		if (worldObj.isRemote
+				|| worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) > 0
+				|| tf == null
+				|| tf.getTankInfo(ForgeDirection.DOWN)[0].fluid == null)
+			return;
+		for (Object o : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+			EntityPlayer player = (EntityPlayer) o;
+			Chunk c = worldObj.getChunkFromBlockCoords(
+					RWLUtils.double2int(player.posX),
+					RWLUtils.double2int(player.posZ));
+
+			for (int i = c.xPosition * 16; i < c.xPosition * 16 + 16; i++) {
+				for (int j = c.zPosition * 16; j < c.zPosition * 16 + 16; j++) {
+					Random rand = new Random();
+					if (rand.nextInt(6000) == 0) {
+						EntityItem ei = new EntityItem(worldObj, i
+								+ rand.nextDouble() - 0.5D, 300, j
+								+ rand.nextDouble() - 0.5D, CWACOM.foodList
+								.get(new Random().nextInt(CWACOM.foodList
+										.size())).copy());
+						int health = ((ItemFood) ei.getEntityItem().getItem())
+								.func_150905_g(ei.getEntityItem().copy());
+						if (health * 5000 <= getEnergyStored(ForgeDirection.DOWN)
+								&& tf.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount >= health * 500
+								&& tf.yCoord >= 200
+								&& (worldObj.provider.dimensionId != -1 && worldObj.provider.dimensionId != 1)) {
+							worldObj.spawnEntityInWorld(ei);
+							ei.setVelocity(0D, -10D, 0D);
+
+							en.modifyEnergyStored(-health * 5000);
+							tf.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount = tf
+									.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount
+									- health * 100;
+							worldObj.markBlockForUpdate(tfX, tfY, tfZ);
+							worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+						}
+					}
+				}
 			}
 		}
 	}
 
-//	@Override
-//	public Packet getDescriptionPacket() {
-//		NBTTagCompound syncData = new NBTTagCompound();
-//		this.writeToNBT(syncData);
-//		return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord,
-//				this.zCoord, 1, syncData);
-//	}
-//
-//	@Override
-//	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-//		readFromNBT(pkt.func_148857_g());
-//		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-//		System.out.println("onData");
-//	}
-
-	public int getX() {
-		return x;
+	@Override
+	public Packet getDescriptionPacket() {
+		NBTTagCompound syncData = new NBTTagCompound();
+		this.writeToNBT(syncData);
+		return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord,
+				this.zCoord, 1, syncData);
 	}
 
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	public int getZ() {
-		return z;
-	}
-
-	public void setZ(int z) {
-		this.z = z;
+	@Override
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+		readFromNBT(pkt.func_148857_g());
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	public EnergyStorage getEn() {
@@ -149,12 +129,24 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 		return true;
 	}
 
-	public ItemStack getStack() {
-		return stack;
+	public void setTfX(int tfX) {
+		this.tfX = tfX;
 	}
 
-	public void setStack(ItemStack stack) {
-		this.stack = stack;
+	public void setTfY(int tfY) {
+		this.tfY = tfY;
+	}
+
+	public void setTfZ(int tfZ) {
+		this.tfZ = tfZ;
+	}
+
+	public TileFldsmdfr getTf() {
+		return tf;
+	}
+
+	public void setTf(TileFldsmdfr tf) {
+		this.tf = tf;
 	}
 
 	@Override

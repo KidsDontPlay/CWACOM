@@ -1,14 +1,15 @@
+
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
-  "version": "${version}",
+  "modid": "cwacom",
+  "name": "CWACOM",
+  "description": "Cloudy with a chance of meatballs",
+  "version": "",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["MrRiegel"],
+  "credits": "The Forge and FML guys",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

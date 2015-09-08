@@ -1,8 +1,8 @@
 package mrriegel.cwacom.init;
 
+import mrriegel.cwacom.Reference;
 import mrriegel.cwacom.block.BlockFldsmdfr;
 import mrriegel.cwacom.block.BlockTerminal;
-import mrriegel.cwacom.reference.Reference;
 import mrriegel.cwacom.tile.TileFldsmdfr;
 import mrriegel.cwacom.tile.TileTerminal;
 import net.minecraft.block.Block;

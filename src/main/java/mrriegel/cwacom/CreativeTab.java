@@ -1,7 +1,6 @@
 package mrriegel.cwacom;
 
 import mrriegel.cwacom.init.ModBlocks;
-import mrriegel.cwacom.reference.Reference;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 

@@ -1,4 +1,4 @@
-package mrriegel.cwacom.reference;
+package mrriegel.cwacom;
 
 public class Reference {
 	public static final String MOD_ID = "cwacom";

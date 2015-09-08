@@ -2,17 +2,14 @@ package mrriegel.cwacom.item;
 
 import java.util.List;
 
-import mrriegel.cwacom.CWACOM;
 import mrriegel.cwacom.CreativeTab;
+import mrriegel.cwacom.Reference;
 import mrriegel.cwacom.init.ModBlocks;
-import mrriegel.cwacom.reference.Reference;
+import mrriegel.cwacom.tile.TileFldsmdfr;
 import mrriegel.cwacom.tile.TileTerminal;
 import mrriegel.cwacom.util.NBTHelper;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -26,34 +23,40 @@ public class ItemRC extends Item {
 	}
 
 	@Override
+	public boolean hasEffect(ItemStack par1ItemStack, int pass) {
+		if (NBTHelper.getBoolean(par1ItemStack, "saved"))
+			return true;
+		else
+			return false;
+	}
+
+	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world,
 			int x, int y, int z, int side, float p_77648_8_, float p_77648_9_,
 			float p_77648_10_) {
-		if (!world.isRemote) {
-			EntityItem ei = new EntityItem(world, player.posX, player.posY,
-					player.posZ, new ItemStack(Items.cooked_porkchop));
-			world.spawnEntityInWorld(ei);
-			System.out.println("num: " + ei.getEntityItem().stackSize);
-			return false;
-		}
-
 		if (player.isSneaking()
 				&& world.getBlock(x, y, z).equals(ModBlocks.fldsmdfr)) {
 			NBTHelper.setBoolean(stack, "saved", true);
 			NBTHelper.setInteger(stack, "x", x);
 			NBTHelper.setInteger(stack, "y", y);
 			NBTHelper.setInteger(stack, "z", z);
+			return true;
 		} else if (!player.isSneaking()
 				&& world.getBlock(x, y, z).equals(ModBlocks.terminal)
 				&& NBTHelper.getBoolean(stack, "saved")) {
 			TileEntity t = world.getTileEntity(x, y, z);
 			if (t != null && t instanceof TileTerminal) {
 				TileTerminal tile = (TileTerminal) t;
-				tile.setX(x);
-				tile.setY(y);
-				tile.setZ(z);
+				tile.setTfX(NBTHelper.getInt(stack, "x"));
+				tile.setTfY(NBTHelper.getInt(stack, "y"));
+				tile.setTfZ(NBTHelper.getInt(stack, "z"));
+				tile.setTf((TileFldsmdfr) world.getTileEntity(
+						NBTHelper.getInt(stack, "x"),
+						NBTHelper.getInt(stack, "y"),
+						NBTHelper.getInt(stack, "z")));
 
 				NBTHelper.setBoolean(stack, "saved", false);
+				return true;
 			}
 		}
 

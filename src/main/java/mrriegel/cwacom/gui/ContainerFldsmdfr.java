@@ -1,16 +1,17 @@
 package mrriegel.cwacom.gui;
 
-import mrriegel.cwacom.tile.TileTerminal;
+import mrriegel.cwacom.tile.TileFldsmdfr;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 
-public class ContainerTerminal extends Container {
-	TileTerminal tile;
+public class ContainerFldsmdfr extends Container {
 
-	public ContainerTerminal(EntityPlayer player, InventoryPlayer inventory,
-			TileTerminal tile) {
+	TileFldsmdfr tile;
+
+	public ContainerFldsmdfr(EntityPlayer player, InventoryPlayer inventory,
+			TileFldsmdfr tile) {
 		this.tile = tile;
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 9; j++) {

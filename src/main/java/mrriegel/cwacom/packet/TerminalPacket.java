@@ -1,7 +1,7 @@
 package mrriegel.cwacom.packet;
 
-import net.minecraft.item.ItemStack;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 

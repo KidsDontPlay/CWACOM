@@ -1,5 +1,9 @@
 package mrriegel.cwacom.tile;
 
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -15,10 +19,37 @@ public class TileFldsmdfr extends TileEntity implements IFluidHandler {
 	FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 8);
 
 	@Override
+	public void readFromNBT(NBTTagCompound tag) {
+		super.readFromNBT(tag);
+		tank.readFromNBT(tag);
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound tag) {
+		super.writeToNBT(tag);
+		tank.writeToNBT(tag);
+	}
+
+	@Override
+	public Packet getDescriptionPacket() {
+		NBTTagCompound syncData = new NBTTagCompound();
+		this.writeToNBT(syncData);
+		return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord,
+				this.zCoord, 1, syncData);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+		readFromNBT(pkt.func_148857_g());
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	}
+
+	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
 		if (resource == null || !canFill(from, resource.getFluid())) {
 			return 0;
 		}
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return tank.fill(resource, doFill);
 	}
 

@@ -1,7 +1,7 @@
 package mrriegel.cwacom.init;
 
+import mrriegel.cwacom.Reference;
 import mrriegel.cwacom.item.ItemRC;
-import mrriegel.cwacom.reference.Reference;
 import net.minecraft.item.Item;
 import cpw.mods.fml.common.registry.GameRegistry;
 

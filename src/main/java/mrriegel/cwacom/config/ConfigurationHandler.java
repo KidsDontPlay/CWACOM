@@ -8,7 +8,7 @@ public class ConfigurationHandler {
 
 	public static void refreshConfig() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
