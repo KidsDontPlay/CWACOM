@@ -1,5 +1,37 @@
 package mrriegel.cwacom.proxy;
 
-public class CommonProxy {
+import mrriegel.cwacom.gui.ContainerTerminal;
+import mrriegel.cwacom.gui.GuiTerminal;
+import mrriegel.cwacom.tile.TileTerminal;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import cpw.mods.fml.common.network.IGuiHandler;
+
+public class CommonProxy implements IGuiHandler {
+	public static final int TERMINAL = 0;
+
+	@Override
+	public Object getServerGuiElement(int ID, EntityPlayer player, World world,
+			int x, int y, int z) {
+		switch (ID) {
+		case TERMINAL:
+			return new ContainerTerminal(player, player.inventory,
+					(TileTerminal) world.getTileEntity(x, y, z));
+
+		}
+		return null;
+	}
+
+	@Override
+	public Object getClientGuiElement(int ID, EntityPlayer player, World world,
+			int x, int y, int z) {
+		switch (ID) {
+		case TERMINAL:
+			return new GuiTerminal(new ContainerTerminal(player,
+					player.inventory, (TileTerminal) world.getTileEntity(x, y,
+							z)));
+		}
+		return null;
+	}
 
 }
