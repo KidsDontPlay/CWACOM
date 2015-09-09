@@ -51,8 +51,8 @@ public class GuiTerminal extends GuiContainer {
 	protected void drawGuiContainerForegroundLayer(int param1, int param2) {
 		fontRendererObj.drawString("Terminal", 8, 6, 4210752);
 		if (tf != null)
-			fontRendererObj.drawString("x:" + tf.xCoord + " y:" + tf.yCoord
-					+ " z:" + tf.zCoord, 70, 12, 4210752);
+			fontRendererObj.drawString("x: " + tf.xCoord + " y: " + tf.yCoord
+					+ " z: " + tf.zCoord, 65, 12, 4210752);
 		fontRendererObj.drawString(
 				StatCollector.translateToLocal("container.inventory"), 8,
 				ySize - 96 + 2, 4210752);

@@ -58,7 +58,6 @@ public class CWACOM {
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		System.out.println("dd");
 		foodList = new ArrayList<ItemStack>();
 		Iterator<Item> f = GameData.getItemRegistry().iterator();
 		while (f.hasNext()) {
