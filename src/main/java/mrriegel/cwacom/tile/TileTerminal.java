@@ -3,7 +3,8 @@ package mrriegel.cwacom.tile;
 import java.util.Random;
 
 import mrriegel.cwacom.CWACOM;
-import mrriegel.cwacom.util.RWLUtils;
+import mrriegel.cwacom.config.ConfigurationHandler;
+import mrriegel.cwacom.util.RiegelUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
@@ -68,13 +69,13 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 		for (Object o : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
 			EntityPlayer player = (EntityPlayer) o;
 			Chunk c = worldObj.getChunkFromBlockCoords(
-					RWLUtils.double2int(player.posX),
-					RWLUtils.double2int(player.posZ));
+					RiegelUtils.double2int(player.posX),
+					RiegelUtils.double2int(player.posZ));
 
 			for (int i = c.xPosition * 16; i < c.xPosition * 16 + 16; i++) {
 				for (int j = c.zPosition * 16; j < c.zPosition * 16 + 16; j++) {
 					Random rand = new Random();
-					if (rand.nextInt(6000) == 0) {
+					if (rand.nextInt(ConfigurationHandler.amplifier) == 0) {
 						EntityItem ei = new EntityItem(worldObj, i
 								+ rand.nextDouble() - 0.5D, 300, j
 								+ rand.nextDouble() - 0.5D, CWACOM.foodList
@@ -82,17 +83,21 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 										.size())).copy());
 						int health = ((ItemFood) ei.getEntityItem().getItem())
 								.func_150905_g(ei.getEntityItem().copy());
-						if (health * 5000 <= getEnergyStored(ForgeDirection.DOWN)
-								&& tf.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount >= health * 500
+						if (health * ConfigurationHandler.rfCost <= getEnergyStored(ForgeDirection.DOWN)
+								&& tf.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount >= health
+										* ConfigurationHandler.waterCost
 								&& tf.yCoord >= 200
-								&& (worldObj.provider.dimensionId != -1 && worldObj.provider.dimensionId != 1)) {
+								&& (worldObj.provider.dimensionId != -1 && worldObj.provider.dimensionId != 1)
+								&& worldObj.getChunkFromBlockCoords(tf.xCoord,
+										tf.zCoord).isChunkLoaded) {
 							worldObj.spawnEntityInWorld(ei);
 							ei.setVelocity(0D, -10D, 0D);
 
-							en.modifyEnergyStored(-health * 5000);
+							en.modifyEnergyStored(-health
+									* ConfigurationHandler.rfCost);
 							tf.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount = tf
 									.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount
-									- health * 100;
+									- health * ConfigurationHandler.waterCost;
 							worldObj.markBlockForUpdate(tfX, tfY, tfZ);
 							worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 						}

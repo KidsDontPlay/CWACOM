@@ -35,7 +35,7 @@ public class BlockFldsmdfr extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
 		this.blockIcon = reg.registerIcon(Reference.MOD_ID + ":"
-				+ "terminal_side");
+				+ "fldsmdfr_side");
 		this.front = reg
 				.registerIcon(Reference.MOD_ID + ":" + "fldsmdfr_front");
 	}
@@ -43,8 +43,6 @@ public class BlockFldsmdfr extends BlockContainer {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
-		if (side == 3)
-			return this.front;
 		return side == 1 ? this.blockIcon : (side == 0 ? this.blockIcon
 				: (side != meta ? this.blockIcon : this.front));
 	}

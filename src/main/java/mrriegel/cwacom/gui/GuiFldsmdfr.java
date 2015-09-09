@@ -60,16 +60,16 @@ public class GuiFldsmdfr extends GuiContainer {
 
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawing(GL11.GL_QUADS);
-		tessellator.setColorRGBA(28, 134, 235, 255);
+		tessellator.setColorRGBA(166, 166, 166, 255);
 		double s = 65.D;
 		if (tile.getTankInfo(ForgeDirection.DOWN)[0].fluid != null)
 			s = -47.D / 8000.D
 					* tile.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount
 					+ 65.D;
-		tessellator.addVertex(18, s, 0);// lo
-		tessellator.addVertex(18, 65.D, 0);// lu
-		tessellator.addVertex(30, 65.D, 0);// ru
-		tessellator.addVertex(30, s, 0);// ro
+		tessellator.addVertex(18, 18, 0);// lo
+		tessellator.addVertex(18, s, 0);// lu
+		tessellator.addVertex(30, s, 0);// ru
+		tessellator.addVertex(30, 18, 0);// ro
 		tessellator.draw();
 
 		GL11.glDepthMask(true);

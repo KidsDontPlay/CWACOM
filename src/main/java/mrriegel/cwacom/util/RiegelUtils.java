@@ -6,6 +6,7 @@ import java.util.Vector;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,7 +23,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
 
-public class RWLUtils {
+public class RiegelUtils {
 	public static ArrayList<BlockLocation> getAroundBlocks(int x, int y, int z) {
 		ArrayList<BlockLocation> lis = new ArrayList<BlockLocation>();
 

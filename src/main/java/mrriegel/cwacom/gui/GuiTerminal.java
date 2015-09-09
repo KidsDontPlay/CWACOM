@@ -51,8 +51,8 @@ public class GuiTerminal extends GuiContainer {
 	protected void drawGuiContainerForegroundLayer(int param1, int param2) {
 		fontRendererObj.drawString("Terminal", 8, 6, 4210752);
 		if (tf != null)
-			fontRendererObj.drawString("Fldsmdfr at " + tf.xCoord + " "
-					+ tf.yCoord + " " + tf.zCoord, 75, 12, 4210752);
+			fontRendererObj.drawString("x:" + tf.xCoord + " y:" + tf.yCoord
+					+ " z:" + tf.zCoord, 70, 12, 4210752);
 		fontRendererObj.drawString(
 				StatCollector.translateToLocal("container.inventory"), 8,
 				ySize - 96 + 2, 4210752);
@@ -64,26 +64,34 @@ public class GuiTerminal extends GuiContainer {
 
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawing(GL11.GL_QUADS);
-		tessellator.setColorRGBA(238, 0, 0, 255);
+		tessellator.setColorRGBA(166, 166, 166, 255);
 		double s = -47.D / 200000.D * tile.getEn().getEnergyStored() + 65.D;
-		tessellator.addVertex(18, s, 0);// lo
-		tessellator.addVertex(18, 65.D, 0);// lu
-		tessellator.addVertex(30, 65.D, 0);// ru
-		tessellator.addVertex(30, s, 0);// ro
+		tessellator.addVertex(18, 18, 0);// lo
+		tessellator.addVertex(18, s, 0);// lu
+		tessellator.addVertex(30, s, 0);// ru
+		tessellator.addVertex(30, 18, 0);// ro
 		tessellator.draw();
 
 		if (tf != null) {
 			tessellator.startDrawing(GL11.GL_QUADS);
-			tessellator.setColorRGBA(28, 134, 235, 255);
+			tessellator.setColorRGBA(166, 166, 166, 255);
 			double st = 65.D;
 			if (tf.getTankInfo(ForgeDirection.DOWN)[0].fluid != null)
 				st = -47.D / 8000.D
 						* tf.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount
 						+ 65.D;
-			tessellator.addVertex(42, st, 0);// lo
-			tessellator.addVertex(42, 65.D, 0);// lu
-			tessellator.addVertex(54, 65.D, 0);// ru
-			tessellator.addVertex(54, st, 0);// ro
+			tessellator.addVertex(42, 18, 0);// lo
+			tessellator.addVertex(42, st, 0);// lu
+			tessellator.addVertex(54, st, 0);// ru
+			tessellator.addVertex(54, 18, 0);// ro
+			tessellator.draw();
+		} else {
+			tessellator.startDrawing(GL11.GL_QUADS);
+			tessellator.setColorRGBA(166, 166, 166, 255);
+			tessellator.addVertex(42, 18, 0);// lo
+			tessellator.addVertex(42, 65, 0);// lu
+			tessellator.addVertex(54, 65, 0);// ru
+			tessellator.addVertex(54, 18, 0);// ro
 			tessellator.draw();
 		}
 		GL11.glDepthMask(true);
@@ -101,17 +109,20 @@ public class GuiTerminal extends GuiContainer {
 			GL11.glPopAttrib();
 			GL11.glPopAttrib();
 		}
-		if (func_146978_c(42, 18, 12, 47, param1, param2) && tf != null) {
+		if (func_146978_c(42, 18, 12, 47, param1, param2)) {
 			List list = new ArrayList();
 			int k = (width - xSize) / 2;
 			int l = (height - ySize) / 2;
-			if (tf.getTankInfo(ForgeDirection.DOWN)[0].fluid != null)
-				list.add(tf.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount
-						+ " / "
-						+ tf.getTankInfo(ForgeDirection.DOWN)[0].capacity);
+			if (tf != null)
+				if (tf.getTankInfo(ForgeDirection.DOWN)[0].fluid != null)
+					list.add(tf.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount
+							+ " / "
+							+ tf.getTankInfo(ForgeDirection.DOWN)[0].capacity);
+				else
+					list.add("0" + " / "
+							+ tf.getTankInfo(ForgeDirection.DOWN)[0].capacity);
 			else
-				list.add("0" + " / "
-						+ tf.getTankInfo(ForgeDirection.DOWN)[0].capacity);
+				list.add("No connected Fldsmdfr");
 			GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
 			this.drawHoveringText(list, param1 - k, param2 - l, fontRendererObj);
