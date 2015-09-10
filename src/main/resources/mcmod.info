@@ -4,7 +4,7 @@
   "modid": "cwacom",
   "name": "CWACOM",
   "description": "Cloudy with a chance of meatballs",
-  "version": "0.1",
+  "version": "0.2",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",

@@ -20,9 +20,9 @@ import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 
 public class TileTerminal extends TileEntity implements IEnergyReceiver {
-	private EnergyStorage en = new EnergyStorage(200000, 1000, 0);
+	private EnergyStorage en = new EnergyStorage(200000, 1500, 0);
 	private TileFldsmdfr tf;
-	private int tfX, tfY, tfZ;
+	private int tfX, tfY, tfZ, count;
 
 	public TileTerminal() {
 		super();
@@ -34,6 +34,7 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 		tfX = tag.getInteger("tfX");
 		tfY = tag.getInteger("tfY");
 		tfZ = tag.getInteger("tfZ");
+		count = tag.getInteger("count");
 		en.readFromNBT(tag);
 	}
 
@@ -43,6 +44,7 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 		tag.setInteger("tfX", tfX);
 		tag.setInteger("tfY", tfY);
 		tag.setInteger("tfZ", tfZ);
+		tag.setInteger("count", count);
 		en.writeToNBT(tag);
 	}
 
@@ -64,7 +66,7 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 		if (worldObj.isRemote
 				|| worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) > 0
 				|| tf == null
-				|| tf.getTankInfo(ForgeDirection.DOWN)[0].fluid == null)
+				|| tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid == null)
 			return;
 		for (Object o : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
 			EntityPlayer player = (EntityPlayer) o;
@@ -76,28 +78,32 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 				for (int j = c.zPosition * 16; j < c.zPosition * 16 + 16; j++) {
 					Random rand = new Random();
 					if (rand.nextInt(ConfigurationHandler.amplifier) == 0) {
-						EntityItem ei = new EntityItem(worldObj, i
-								+ rand.nextDouble() - 0.5D, 300, j
-								+ rand.nextDouble() - 0.5D, CWACOM.foodList
-								.get(new Random().nextInt(CWACOM.foodList
-										.size())).copy());
+						EntityItem ei = new EntityItem(
+								worldObj,
+								i + rand.nextDouble() - 0.5D,
+								300,
+								j + rand.nextDouble() - 0.5D,
+								CWACOM.foodList
+										.get(count == 0 ? new Random()
+												.nextInt(CWACOM.foodList.size() - 1) + 1
+												: count).copy());
 						int health = ((ItemFood) ei.getEntityItem().getItem())
 								.func_150905_g(ei.getEntityItem().copy());
-						if (health * ConfigurationHandler.rfCost <= getEnergyStored(ForgeDirection.DOWN)
-								&& tf.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount >= health
+						if (health * ConfigurationHandler.rfCost <= getEnergyStored(ForgeDirection.UNKNOWN)
+								&& tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid.amount >= health
 										* ConfigurationHandler.waterCost
 								&& tf.yCoord >= 200
 								&& (worldObj.provider.dimensionId != -1 && worldObj.provider.dimensionId != 1)
 								&& worldObj.getChunkFromBlockCoords(tf.xCoord,
-										tf.zCoord).isChunkLoaded) {
+										tf.zCoord).isChunkLoaded
+								&& player.worldObj.provider.dimensionId == worldObj.provider.dimensionId) {
 							worldObj.spawnEntityInWorld(ei);
 							ei.setVelocity(0D, -10D, 0D);
 
 							en.modifyEnergyStored(-health
 									* ConfigurationHandler.rfCost);
-							tf.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount = tf
-									.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount
-									- health * ConfigurationHandler.waterCost;
+							tf.drain(ForgeDirection.UNKNOWN, health
+									* ConfigurationHandler.waterCost, true);
 							worldObj.markBlockForUpdate(tfX, tfY, tfZ);
 							worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 						}
@@ -152,6 +158,14 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 
 	public void setTf(TileFldsmdfr tf) {
 		this.tf = tf;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 	@Override

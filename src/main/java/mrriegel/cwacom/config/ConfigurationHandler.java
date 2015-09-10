@@ -9,6 +9,7 @@ public class ConfigurationHandler {
 	public static int amplifier;
 	public static int rfCost;
 	public static int waterCost;
+	public static boolean apple;
 
 	public static void refreshConfig() {
 		rfCost = config.get("Common", "rfCost", 5000,
@@ -17,7 +18,12 @@ public class ConfigurationHandler {
 				"Cost of Water = this * saturation").getInt();
 		amplifier = config.get("Common", "amplifier", 6000,
 				"The lower the amplifier the more food.").getInt();
+		apple = config.get("Common", "goldenApple", false,
+				"enable golden apple").getBoolean();
 
+		if (config.hasChanged()) {
+			config.save();
+		}
 	}
 
 }

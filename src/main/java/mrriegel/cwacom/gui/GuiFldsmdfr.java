@@ -62,9 +62,9 @@ public class GuiFldsmdfr extends GuiContainer {
 		tessellator.startDrawing(GL11.GL_QUADS);
 		tessellator.setColorRGBA(166, 166, 166, 255);
 		double s = 65.D;
-		if (tile.getTankInfo(ForgeDirection.DOWN)[0].fluid != null)
+		if (tile.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid != null)
 			s = -47.D / 8000.D
-					* tile.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount
+					* tile.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid.amount
 					+ 65.D;
 		tessellator.addVertex(18, 18, 0);// lo
 		tessellator.addVertex(18, s, 0);// lu
@@ -79,13 +79,13 @@ public class GuiFldsmdfr extends GuiContainer {
 			List list = new ArrayList();
 			int k = (width - xSize) / 2;
 			int l = (height - ySize) / 2;
-			if (tile.getTankInfo(ForgeDirection.DOWN)[0].fluid != null)
-				list.add(tile.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount
+			if (tile.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid != null)
+				list.add(tile.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid.amount
 						+ " / "
-						+ tile.getTankInfo(ForgeDirection.DOWN)[0].capacity);
+						+ tile.getTankInfo(ForgeDirection.UNKNOWN)[0].capacity);
 			else
 				list.add("0" + " / "
-						+ tile.getTankInfo(ForgeDirection.DOWN)[0].capacity);
+						+ tile.getTankInfo(ForgeDirection.UNKNOWN)[0].capacity);
 			GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
 			this.drawHoveringText(list, param1 - k, param2 - l, fontRendererObj);

@@ -3,7 +3,10 @@ package mrriegel.cwacom.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import mrriegel.cwacom.CWACOM;
 import mrriegel.cwacom.Reference;
+import mrriegel.cwacom.packet.PacketHandler;
+import mrriegel.cwacom.packet.TerminalPacket;
 import mrriegel.cwacom.tile.TileFldsmdfr;
 import mrriegel.cwacom.tile.TileTerminal;
 import net.minecraft.client.gui.GuiButton;
@@ -21,7 +24,8 @@ public class GuiTerminal extends GuiContainer {
 
 	TileTerminal tile;
 	TileFldsmdfr tf;
-	GuiButton but;
+	GuiButton lef, rig;
+	String food;
 
 	public GuiTerminal(ContainerTerminal containerTerminal) {
 		super(containerTerminal);
@@ -33,15 +37,31 @@ public class GuiTerminal extends GuiContainer {
 	@Override
 	public void initGui() {
 		super.initGui();
-		but = new GuiButton(0, 70 + guiLeft, 20 + guiTop, 70, 20, "Next");
-		// this.buttonList.add(but);
+		lef = new GuiButton(0, 70 + guiLeft, 25 + guiTop, 20, 20, "<");
+		this.buttonList.add(lef);
+		rig = new GuiButton(1, 100 + guiLeft, 25 + guiTop, 20, 20, ">");
+		this.buttonList.add(rig);
 	}
 
 	@Override
 	protected void actionPerformed(GuiButton button) {
 		switch (button.id) {
 		case 0:
-			System.out.println("nana");
+			if (tile.getCount() <= 0)
+				tile.setCount(CWACOM.foodList.size() - 1);
+			else
+				tile.setCount(tile.getCount() - 1);
+			PacketHandler.INSTANCE.sendToServer(new TerminalPacket(tile
+					.getCount(), tile.xCoord, tile.yCoord, tile.zCoord));
+			break;
+
+		case 1:
+			if (tile.getCount() >= CWACOM.foodList.size() - 1)
+				tile.setCount(0);
+			else
+				tile.setCount(tile.getCount() + 1);
+			PacketHandler.INSTANCE.sendToServer(new TerminalPacket(tile
+					.getCount(), tile.xCoord, tile.yCoord, tile.zCoord));
 			break;
 		}
 
@@ -52,7 +72,12 @@ public class GuiTerminal extends GuiContainer {
 		fontRendererObj.drawString("Terminal", 8, 6, 4210752);
 		if (tf != null)
 			fontRendererObj.drawString("x: " + tf.xCoord + " y: " + tf.yCoord
-					+ " z: " + tf.zCoord, 65, 12, 4210752);
+					+ " z: " + tf.zCoord, 65, 12, 0x000000);
+		if (tile.getCount() != 0)
+			fontRendererObj.drawString(CWACOM.foodList.get(tile.getCount())
+					.getDisplayName(), 62, 50, 0x000000);
+		else
+			fontRendererObj.drawString("RANDOM", 62, 50, 0x000000);
 		fontRendererObj.drawString(
 				StatCollector.translateToLocal("container.inventory"), 8,
 				ySize - 96 + 2, 4210752);
@@ -76,9 +101,10 @@ public class GuiTerminal extends GuiContainer {
 			tessellator.startDrawing(GL11.GL_QUADS);
 			tessellator.setColorRGBA(166, 166, 166, 255);
 			double st = 65.D;
-			if (tf.getTankInfo(ForgeDirection.DOWN)[0].fluid != null)
-				st = -47.D / 8000.D
-						* tf.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount
+			if (tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid != null)
+				st = -47.D
+						/ 8000.D
+						* tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid.amount
 						+ 65.D;
 			tessellator.addVertex(42, 18, 0);// lo
 			tessellator.addVertex(42, st, 0);// lu
@@ -114,13 +140,14 @@ public class GuiTerminal extends GuiContainer {
 			int k = (width - xSize) / 2;
 			int l = (height - ySize) / 2;
 			if (tf != null)
-				if (tf.getTankInfo(ForgeDirection.DOWN)[0].fluid != null)
-					list.add(tf.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount
+				if (tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid != null)
+					list.add(tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid.amount
 							+ " / "
-							+ tf.getTankInfo(ForgeDirection.DOWN)[0].capacity);
+							+ tf.getTankInfo(ForgeDirection.UNKNOWN)[0].capacity);
 				else
-					list.add("0" + " / "
-							+ tf.getTankInfo(ForgeDirection.DOWN)[0].capacity);
+					list.add("0"
+							+ " / "
+							+ tf.getTankInfo(ForgeDirection.UNKNOWN)[0].capacity);
 			else
 				list.add("No connected Fldsmdfr");
 			GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
@@ -129,6 +156,7 @@ public class GuiTerminal extends GuiContainer {
 			GL11.glPopAttrib();
 			GL11.glPopAttrib();
 		}
+
 	}
 
 	@Override
@@ -139,7 +167,6 @@ public class GuiTerminal extends GuiContainer {
 		int k = (width - xSize) / 2;
 		int l = (height - ySize) / 2;
 		drawTexturedModalRect(k, l, 0, 0, xSize, ySize);
-
 	}
 
 }

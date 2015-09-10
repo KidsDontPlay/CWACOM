@@ -76,6 +76,17 @@ public class TileFldsmdfr extends TileEntity implements IFluidHandler {
 			return false;
 	}
 
+	public boolean canFill(ForgeDirection from, Fluid fluid, int amount) {
+		if (!canFill(from, fluid))
+			return false;
+		FluidTankInfo fti = getTankInfo(from)[0];
+		if (fti.fluid == null)
+			return true;
+		if (fti.capacity >= fti.fluid.amount + amount)
+			return true;
+		return false;
+	}
+
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid) {
 		return false;

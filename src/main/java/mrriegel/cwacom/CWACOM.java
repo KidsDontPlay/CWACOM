@@ -10,6 +10,7 @@ import mrriegel.cwacom.init.ModBlocks;
 import mrriegel.cwacom.init.ModItems;
 import mrriegel.cwacom.packet.PacketHandler;
 import mrriegel.cwacom.proxy.CommonProxy;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
@@ -60,10 +61,13 @@ public class CWACOM {
 	public void postInit(FMLPostInitializationEvent event) {
 		foodList = new ArrayList<ItemStack>();
 		Iterator<Item> f = GameData.getItemRegistry().iterator();
+		Item x = new Item();
+		foodList.add(new ItemStack(x));
 		while (f.hasNext()) {
 			Item i = f.next();
 			if (i instanceof ItemFood) {
-				ItemFood item = (ItemFood) i;
+				if (i.equals(Items.golden_apple) && !ConfigurationHandler.apple)
+					continue;
 				if (i.getHasSubtypes()) {
 					i.getSubItems(i, null, foodList);
 				} else

@@ -11,11 +11,15 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -54,11 +58,36 @@ public class BlockFldsmdfr extends BlockContainer {
 	public boolean onBlockActivated(World world, int x, int y, int z,
 			EntityPlayer player, int p_149727_6_, float p_149727_7_,
 			float p_149727_8_, float p_149727_9_) {
+		if (player.getHeldItem() != null
+				&& player.getHeldItem().getItem().equals(Items.water_bucket)) {
+			if (world.isRemote)
+				return true;
+			TileFldsmdfr tile = (TileFldsmdfr) world.getTileEntity(x, y, z);
+			if (player.capabilities.isCreativeMode) {
+				tile.fill(ForgeDirection.UNKNOWN, new FluidStack(
+						FluidRegistry.WATER, 1000), true);
+				return true;
+
+			}
+			if (!player.capabilities.isCreativeMode
+					&& tile.canFill(ForgeDirection.UNKNOWN,
+							FluidRegistry.WATER, 1000)) {
+				player.inventory.setInventorySlotContents(
+						player.inventory.currentItem, (ItemStack) null);
+				player.inventory.addItemStackToInventory(new ItemStack(
+						Items.bucket));
+				tile.fill(ForgeDirection.UNKNOWN, new FluidStack(
+						FluidRegistry.WATER, 1000), true);
+				return true;
+			}
+			return false;
+		}
 		if (player.getHeldItem() == null
 				|| !player.getHeldItem().getItem().equals(ModItems.rc)) {
 			player.openGui(CWACOM.instance, CommonProxy.F, world, x, y, z);
 			return true;
 		}
+
 		return false;
 	}
 
