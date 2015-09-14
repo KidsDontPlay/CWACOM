@@ -12,6 +12,8 @@ import mrriegel.cwacom.tile.TileTerminal;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -24,8 +26,7 @@ public class GuiTerminal extends GuiContainer {
 
 	TileTerminal tile;
 	TileFldsmdfr tf;
-	GuiButton lef, rig;
-	String food;
+	GuiButton lefF, rigF, lefM, rigM;
 
 	public GuiTerminal(ContainerTerminal containerTerminal) {
 		super(containerTerminal);
@@ -37,10 +38,14 @@ public class GuiTerminal extends GuiContainer {
 	@Override
 	public void initGui() {
 		super.initGui();
-		lef = new GuiButton(0, 70 + guiLeft, 25 + guiTop, 20, 20, "<");
-		this.buttonList.add(lef);
-		rig = new GuiButton(1, 100 + guiLeft, 25 + guiTop, 20, 20, ">");
-		this.buttonList.add(rig);
+		lefF = new GuiButton(0, 65 + guiLeft, 18 + guiTop, 20, 20, "<");
+		this.buttonList.add(lefF);
+		rigF = new GuiButton(1, 130 + guiLeft, 18 + guiTop, 20, 20, ">");
+		this.buttonList.add(rigF);
+		lefM = new GuiButton(2, 65 + guiLeft, 48 + guiTop, 20, 20, "<");
+		this.buttonList.add(lefM);
+		rigM = new GuiButton(3, 130 + guiLeft, 48 + guiTop, 20, 20, ">");
+		this.buttonList.add(rigM);
 	}
 
 	@Override
@@ -51,8 +56,9 @@ public class GuiTerminal extends GuiContainer {
 				tile.setCount(CWACOM.foodList.size() - 1);
 			else
 				tile.setCount(tile.getCount() - 1);
-			PacketHandler.INSTANCE.sendToServer(new TerminalPacket(tile
-					.getCount(), tile.xCoord, tile.yCoord, tile.zCoord));
+			PacketHandler.INSTANCE
+					.sendToServer(new TerminalPacket(tile.getCount(),
+							tile.xCoord, tile.yCoord, tile.zCoord, "food"));
 			break;
 
 		case 1:
@@ -60,9 +66,29 @@ public class GuiTerminal extends GuiContainer {
 				tile.setCount(0);
 			else
 				tile.setCount(tile.getCount() + 1);
-			PacketHandler.INSTANCE.sendToServer(new TerminalPacket(tile
-					.getCount(), tile.xCoord, tile.yCoord, tile.zCoord));
+			PacketHandler.INSTANCE
+					.sendToServer(new TerminalPacket(tile.getCount(),
+							tile.xCoord, tile.yCoord, tile.zCoord, "food"));
 			break;
+		case 2:
+			if (tile.getRate() <= 0) {
+				tile.setRate(0);
+				break;
+			}
+			tile.setRate(tile.getRate() - 1);
+			PacketHandler.INSTANCE.sendToServer(new TerminalPacket(tile
+					.getRate(), tile.xCoord, tile.yCoord, tile.zCoord, "rate"));
+			break;
+		case 3:
+			if (tile.getRate() >= 10) {
+				tile.setRate(10);
+				break;
+			}
+			tile.setRate(tile.getRate() + 1);
+			PacketHandler.INSTANCE.sendToServer(new TerminalPacket(tile
+					.getRate(), tile.xCoord, tile.yCoord, tile.zCoord, "rate"));
+			break;
+
 		}
 
 	}
@@ -70,14 +96,15 @@ public class GuiTerminal extends GuiContainer {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int param1, int param2) {
 		fontRendererObj.drawString("Terminal", 8, 6, 4210752);
-		if (tf != null)
-			fontRendererObj.drawString("x: " + tf.xCoord + " y: " + tf.yCoord
-					+ " z: " + tf.zCoord, 65, 12, 0x000000);
-		if (tile.getCount() != 0)
-			fontRendererObj.drawString(CWACOM.foodList.get(tile.getCount())
-					.getDisplayName(), 62, 50, 0x000000);
-		else
-			fontRendererObj.drawString("RANDOM", 62, 50, 0x000000);
+		ItemStack st = tile.getCount() != 0 ? CWACOM.foodList.get(tile
+				.getCount()) : CWACOM.foodList.get((int) (System
+				.currentTimeMillis() / 333 % (CWACOM.foodList.size() - 1)) + 1);
+
+		RenderItem r = new RenderItem();
+		r.renderItemIntoGUI(fontRendererObj, mc.renderEngine, st, 100, 20);
+
+		fontRendererObj.drawString(String.valueOf(tile.getRate()), 105, 54,
+				0x000000);
 		fontRendererObj.drawString(
 				StatCollector.translateToLocal("container.inventory"), 8,
 				ySize - 96 + 2, 4210752);
@@ -100,15 +127,15 @@ public class GuiTerminal extends GuiContainer {
 		if (tf != null) {
 			tessellator.startDrawing(GL11.GL_QUADS);
 			tessellator.setColorRGBA(166, 166, 166, 255);
-			double st = 65.D;
+			double he = 65.D;
 			if (tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid != null)
-				st = -47.D
-						/ 8000.D
+				he = -47.D
+						/ 16000.D
 						* tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid.amount
 						+ 65.D;
 			tessellator.addVertex(42, 18, 0);// lo
-			tessellator.addVertex(42, st, 0);// lu
-			tessellator.addVertex(54, st, 0);// ru
+			tessellator.addVertex(42, he, 0);// lu
+			tessellator.addVertex(54, he, 0);// ru
 			tessellator.addVertex(54, 18, 0);// ro
 			tessellator.draw();
 		} else {
@@ -123,7 +150,29 @@ public class GuiTerminal extends GuiContainer {
 		GL11.glDepthMask(true);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		if (func_146978_c(18, 18, 12, 47, param1, param2)) {
+
+		if (func_146978_c(100, 20, 16, 16, param1, param2)) {
+			List list = new ArrayList();
+			int k = (width - xSize) / 2;
+			int l = (height - ySize) / 2;
+			list.add(st.getDisplayName());
+			GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
+			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+			this.drawHoveringText(list, param1 - k, param2 - l, fontRendererObj);
+			GL11.glPopAttrib();
+			GL11.glPopAttrib();
+		} else if (func_146978_c(1, 1, 50, 12, param1, param2) && tf != null) {
+			List list = new ArrayList();
+			int k = (width - xSize) / 2;
+			int l = (height - ySize) / 2;
+			list.add("x: " + tf.xCoord + " y: " + tf.yCoord + " z: "
+					+ tf.zCoord);
+			GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
+			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+			this.drawHoveringText(list, param1 - k, param2 - l, fontRendererObj);
+			GL11.glPopAttrib();
+			GL11.glPopAttrib();
+		} else if (func_146978_c(18, 18, 12, 47, param1, param2)) {
 			List list = new ArrayList();
 			int k = (width - xSize) / 2;
 			int l = (height - ySize) / 2;
@@ -134,8 +183,7 @@ public class GuiTerminal extends GuiContainer {
 			this.drawHoveringText(list, param1 - k, param2 - l, fontRendererObj);
 			GL11.glPopAttrib();
 			GL11.glPopAttrib();
-		}
-		if (func_146978_c(42, 18, 12, 47, param1, param2)) {
+		} else if (func_146978_c(42, 18, 12, 47, param1, param2)) {
 			List list = new ArrayList();
 			int k = (width - xSize) / 2;
 			int l = (height - ySize) / 2;

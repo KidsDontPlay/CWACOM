@@ -13,7 +13,10 @@ public class TerminalPacketHandler implements
 		try {
 			TileTerminal tile = (TileTerminal) ctx.getServerHandler().playerEntity.worldObj
 					.getTileEntity(message.x, message.y, message.z);
-			tile.setCount(message.stack);
+			if (message.kind.equals("food"))
+				tile.setCount(message.number);
+			else if (message.kind.equals("rate"))
+				tile.setRate(message.number);
 			ctx.getServerHandler().playerEntity.worldObj.markBlockForUpdate(
 					message.x, message.y, message.z);
 		} catch (Exception e) {

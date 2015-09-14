@@ -5,7 +5,6 @@ import java.util.List;
 
 import mrriegel.cwacom.Reference;
 import mrriegel.cwacom.tile.TileFldsmdfr;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
@@ -20,28 +19,10 @@ public class GuiFldsmdfr extends GuiContainer {
 			Reference.MOD_ID + ":" + "textures/gui/f.png");
 
 	TileFldsmdfr tile;
-	GuiButton but;
 
 	public GuiFldsmdfr(ContainerFldsmdfr containerF) {
 		super(containerF);
 		this.tile = containerF.tile;
-
-	}
-
-	@Override
-	public void initGui() {
-		super.initGui();
-		but = new GuiButton(0, 70 + guiLeft, 20 + guiTop, 70, 20, "Next");
-		// this.buttonList.add(but);
-	}
-
-	@Override
-	protected void actionPerformed(GuiButton button) {
-		switch (button.id) {
-		case 0:
-			System.out.println("nana");
-			break;
-		}
 
 	}
 
@@ -63,7 +44,7 @@ public class GuiFldsmdfr extends GuiContainer {
 		tessellator.setColorRGBA(166, 166, 166, 255);
 		double s = 65.D;
 		if (tile.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid != null)
-			s = -47.D / 8000.D
+			s = -47.D / 16000.D
 					* tile.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid.amount
 					+ 65.D;
 		tessellator.addVertex(18, 18, 0);// lo

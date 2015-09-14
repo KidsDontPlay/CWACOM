@@ -16,7 +16,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileFldsmdfr extends TileEntity implements IFluidHandler {
 
-	FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 8);
+	FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 16);
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
