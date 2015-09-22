@@ -17,17 +17,25 @@ import net.minecraftforge.fluids.IFluidHandler;
 public class TileFldsmdfr extends TileEntity implements IFluidHandler {
 
 	FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 16);
+	private float angle;
+
+	public TileFldsmdfr() {
+		super();
+		angle = 0.0F;
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
 		tank.readFromNBT(tag);
+		angle = tag.getFloat("angle");
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
 		tank.writeToNBT(tag);
+		tag.setFloat("angle", angle);
 	}
 
 	@Override
@@ -97,4 +105,13 @@ public class TileFldsmdfr extends TileEntity implements IFluidHandler {
 		return new FluidTankInfo[] { tank.getInfo() };
 
 	}
+
+	public float getAngle() {
+		return angle;
+	}
+
+	public void setAngle(float angle) {
+		this.angle = angle;
+	}
+
 }
