@@ -13,8 +13,10 @@ import org.lwjgl.opengl.GL11;
 public class FldsmdfrRenderer extends TileEntitySpecialRenderer {
 
 	ModelFldsmdfr model;
-	private final ResourceLocation texture = new ResourceLocation(
-			Reference.MOD_ID + ":" + "textures/models/fldsmdfr.png");
+	private final ResourceLocation texture1 = new ResourceLocation(
+			Reference.MOD_ID + ":" + "textures/models/fldsmdfr_active.png");
+	private final ResourceLocation texture2 = new ResourceLocation(
+			Reference.MOD_ID + ":" + "textures/models/fldsmdfr_idle.png");
 
 	public FldsmdfrRenderer() {
 		model = new ModelFldsmdfr();
@@ -25,7 +27,10 @@ public class FldsmdfrRenderer extends TileEntitySpecialRenderer {
 			float scale) {
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
-		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+		if (((TileFldsmdfr) te).isActive())
+			Minecraft.getMinecraft().renderEngine.bindTexture(texture1);
+		else
+			Minecraft.getMinecraft().renderEngine.bindTexture(texture2);
 		GL11.glPushMatrix();
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		GL11.glRotatef(((TileFldsmdfr) te).getAngle(), 0.0F, 1.0F, 0.0F);

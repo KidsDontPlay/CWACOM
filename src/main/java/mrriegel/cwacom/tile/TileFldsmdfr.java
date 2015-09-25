@@ -18,6 +18,7 @@ public class TileFldsmdfr extends TileEntity implements IFluidHandler {
 
 	FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 16);
 	private float angle;
+	private boolean active;
 
 	public TileFldsmdfr() {
 		super();
@@ -29,6 +30,7 @@ public class TileFldsmdfr extends TileEntity implements IFluidHandler {
 		super.readFromNBT(tag);
 		tank.readFromNBT(tag);
 		angle = tag.getFloat("angle");
+		active = tag.getBoolean("active");
 	}
 
 	@Override
@@ -36,6 +38,7 @@ public class TileFldsmdfr extends TileEntity implements IFluidHandler {
 		super.writeToNBT(tag);
 		tank.writeToNBT(tag);
 		tag.setFloat("angle", angle);
+		tag.setBoolean("active", active);
 	}
 
 	@Override
@@ -112,6 +115,14 @@ public class TileFldsmdfr extends TileEntity implements IFluidHandler {
 
 	public void setAngle(float angle) {
 		this.angle = angle;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 }

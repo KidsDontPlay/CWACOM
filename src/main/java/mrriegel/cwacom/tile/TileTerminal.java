@@ -67,11 +67,24 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 			tfZ = zCoord;
 			tf = null;
 		}
-		if (worldObj.isRemote
-				|| worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) > 0
-				|| tf == null
-				|| tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid == null)
+		if (worldObj.isRemote)
 			return;
+		if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) > 0
+				|| tf == null
+				|| tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid == null) {
+			if (tf != null) {
+				tf.setActive(false);
+				worldObj.markBlockForUpdate(tfX, tfY, tfZ);
+			}
+			return;
+		}
+		if (rate == 0) {
+			if (tf != null)
+				tf.setActive(false);
+			return;
+		}
+		tf.setActive(true);
+
 		for (Object o : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
 			EntityPlayer player = (EntityPlayer) o;
 			Chunk c = worldObj.getChunkFromBlockCoords(
@@ -79,8 +92,7 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 					RiegelUtils.double2int(player.posZ));
 
 			Random rand = new Random();
-			if (rate == 0 ? false
-					: rand.nextInt((int) (100 / rate * 1.6D)) == 0) {
+			if (rand.nextInt((int) (100 / rate * 1.6D)) == 0) {
 				EntityItem ei = new EntityItem(
 						worldObj,
 						c.xPosition * 16 + (rand.nextInt(16) + 1)
@@ -95,7 +107,6 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 				int health = ((ItemFood) ei.getEntityItem().getItem())
 						.func_150905_g(ei.getEntityItem().copy());
 				if (health * ConfigurationHandler.rfCost <= getEnergyStored(ForgeDirection.UNKNOWN)
-						&& tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid != null
 						&& tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid.amount >= health
 								* ConfigurationHandler.waterCost
 						&& tf.yCoord >= 200

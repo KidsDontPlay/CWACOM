@@ -6,6 +6,7 @@ import mrriegel.cwacom.Reference;
 import mrriegel.cwacom.init.ModItems;
 import mrriegel.cwacom.proxy.CommonProxy;
 import mrriegel.cwacom.tile.TileTerminal;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -86,6 +87,15 @@ public class BlockTerminal extends BlockContainer {
 			world.setBlockMetadataWithNotify(x, y, z, 4, 2);
 		}
 
+	}
+
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block block,
+			int meta) {
+		TileTerminal tile = (TileTerminal) world.getTileEntity(x, y, z);
+		if (tile.getTf() != null)
+			tile.getTf().setActive(false);
+		super.breakBlock(world, x, y, z, block, meta);
 	}
 
 }
