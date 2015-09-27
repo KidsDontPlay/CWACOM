@@ -37,8 +37,6 @@ public class FldsmdfrItemRenderer implements IItemRenderer {
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
 		if (type == ItemRenderType.INVENTORY) {
 			GL11.glPushMatrix();
-			// GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F, (float) z +
-			// 0.5F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(texture1);
 			GL11.glPushMatrix();
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);

@@ -23,6 +23,7 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 	private EnergyStorage en = new EnergyStorage(200000, 2000, 0);
 	private TileFldsmdfr tf;
 	private int tfX, tfY, tfZ, count, rate;
+	long cooldown;
 
 	public TileTerminal() {
 		super();
@@ -38,6 +39,7 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 		tfZ = tag.getInteger("tfZ");
 		count = tag.getInteger("count");
 		rate = tag.getInteger("rate");
+		cooldown = tag.getLong("cooldown");
 		en.readFromNBT(tag);
 	}
 
@@ -49,12 +51,12 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 		tag.setInteger("tfZ", tfZ);
 		tag.setInteger("count", count);
 		tag.setInteger("rate", rate);
+		tag.setLong("cooldown", cooldown);
 		en.writeToNBT(tag);
 	}
 
 	@Override
 	public void updateEntity() {
-
 		if (tf == null || tf.xCoord != tfX || tf.yCoord != tfY
 				|| tf.zCoord != tfZ)
 			if (worldObj.getTileEntity(tfX, tfY, tfZ) instanceof TileFldsmdfr)
@@ -84,7 +86,9 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 			return;
 		}
 		tf.setActive(true);
-
+//		cooldown = worldObj.getTotalWorldTime() % (1777L - 176L * (rate));
+		cooldown = worldObj.getTotalWorldTime() % ((long) (-2360F / 9F * (float)rate + 23960F / 9F));
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		for (Object o : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
 			EntityPlayer player = (EntityPlayer) o;
 			Chunk c = worldObj.getChunkFromBlockCoords(
@@ -92,7 +96,7 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 					RiegelUtils.double2int(player.posZ));
 
 			Random rand = new Random();
-			if (rand.nextInt((int) (100 / rate * 1.6D)) == 0) {
+			if (cooldown == 0) {
 				EntityItem ei = new EntityItem(
 						worldObj,
 						c.xPosition * 16 + (rand.nextInt(16) + 1)
@@ -122,6 +126,7 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 							* ConfigurationHandler.waterCost, true);
 					worldObj.markBlockForUpdate(tfX, tfY, tfZ);
 					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+					markDirty();
 				}
 			}
 		}
@@ -138,7 +143,6 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
 		readFromNBT(pkt.func_148857_g());
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	public EnergyStorage getEn() {
@@ -188,6 +192,14 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 
 	public void setRate(int rate) {
 		this.rate = rate;
+	}
+
+	public long getCooldown() {
+		return cooldown;
+	}
+
+	public void setCooldown(long cooldown) {
+		this.cooldown = cooldown;
 	}
 
 	@Override

@@ -20,6 +20,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import codechicken.lib.gui.GuiDraw;
+
 public class GuiTerminal extends GuiContainer {
 	private static final ResourceLocation texture = new ResourceLocation(
 			Reference.MOD_ID + ":" + "textures/gui/terminal.png");
@@ -204,6 +206,31 @@ public class GuiTerminal extends GuiContainer {
 			GL11.glPopAttrib();
 			GL11.glPopAttrib();
 		}
+		if (tile.getRate() == 0)
+			return;
+
+		// long num = (1228L - 122L * tile.getRate()) - 1L;
+		long num = (long) (-2360F / 9F * (float)tile.getRate() + 23960F / 9F);
+		long x = (num - tile.getCooldown());
+		float ff = (float) x / ((float) num / 47F) + 18;
+
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDepthMask(false);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+		tessellator.startDrawing(GL11.GL_QUADS);
+		tessellator.setColorRGBA(0, 205, 102, 255);
+		tessellator.addVertex(158, ff, 0);// lo
+		tessellator.addVertex(158, 65, 0);// lu
+		tessellator.addVertex(165, 65, 0);// ru
+		tessellator.addVertex(165, ff, 0);// ro
+		tessellator.draw();
+
+		GL11.glDepthMask(true);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 
 	}
 
