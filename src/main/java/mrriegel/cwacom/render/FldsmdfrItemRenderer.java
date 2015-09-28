@@ -1,15 +1,13 @@
 package mrriegel.cwacom.render;
 
-import org.lwjgl.opengl.GL11;
-
 import mrriegel.cwacom.Reference;
-import mrriegel.cwacom.tile.TileFldsmdfr;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
+
+import org.lwjgl.opengl.GL11;
 
 public class FldsmdfrItemRenderer implements IItemRenderer {
 
@@ -23,14 +21,13 @@ public class FldsmdfrItemRenderer implements IItemRenderer {
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		// return type == ItemRenderType.INVENTORY;
 		return true;
 	}
 
 	@Override
 	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item,
 			ItemRendererHelper helper) {
-		return true;
+		return type != ItemRenderType.FIRST_PERSON_MAP;
 	}
 
 	@Override

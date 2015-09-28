@@ -2,18 +2,13 @@ package mrriegel.cwacom.render;
 
 import mrriegel.cwacom.Reference;
 import mrriegel.cwacom.tile.TileFldsmdfr;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class FldsmdfrRenderer extends TileEntitySpecialRenderer {
 

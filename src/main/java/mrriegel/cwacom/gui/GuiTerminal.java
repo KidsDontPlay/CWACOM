@@ -20,8 +20,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.lib.gui.GuiDraw;
-
 public class GuiTerminal extends GuiContainer {
 	private static final ResourceLocation texture = new ResourceLocation(
 			Reference.MOD_ID + ":" + "textures/gui/terminal.png");
@@ -105,8 +103,12 @@ public class GuiTerminal extends GuiContainer {
 		RenderItem r = new RenderItem();
 		r.renderItemIntoGUI(fontRendererObj, mc.renderEngine, st, 100, 20);
 
-		fontRendererObj.drawString(String.valueOf(tile.getRate()), 105, 54,
-				0x000000);
+		String rat = String.valueOf((int) Math.pow(2, (10 - tile.getRate())))
+				+ " s";
+		if (tile.getRate() == 0)
+			rat = "Off";
+		fontRendererObj.drawString(rat,
+				109 - fontRendererObj.getStringWidth(rat) / 2, 54, 0x000000);
 		fontRendererObj.drawString(
 				StatCollector.translateToLocal("container.inventory"), 8,
 				ySize - 96 + 2, 4210752);
@@ -209,8 +211,7 @@ public class GuiTerminal extends GuiContainer {
 		if (tile.getRate() == 0)
 			return;
 
-		// long num = (1228L - 122L * tile.getRate()) - 1L;
-		long num = (long) (-2360F / 9F * (float)tile.getRate() + 23960F / 9F);
+		long num = (long) Math.pow(2, (10 - tile.getRate())) * 20;
 		long x = (num - tile.getCooldown());
 		float ff = (float) x / ((float) num / 47F) + 18;
 

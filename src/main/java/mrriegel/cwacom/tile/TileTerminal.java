@@ -27,7 +27,7 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 
 	public TileTerminal() {
 		super();
-		rate = 1;
+		rate = 5;
 		count = 1;
 	}
 
@@ -86,8 +86,8 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 			return;
 		}
 		tf.setActive(true);
-//		cooldown = worldObj.getTotalWorldTime() % (1777L - 176L * (rate));
-		cooldown = worldObj.getTotalWorldTime() % ((long) (-2360F / 9F * (float)rate + 23960F / 9F));
+		cooldown = worldObj.getTotalWorldTime()
+				% ((long) Math.pow(2, (10 - rate)) * 20);
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		for (Object o : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
 			EntityPlayer player = (EntityPlayer) o;
