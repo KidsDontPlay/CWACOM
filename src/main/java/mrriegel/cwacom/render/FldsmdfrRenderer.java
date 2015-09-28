@@ -27,6 +27,9 @@ public class FldsmdfrRenderer extends TileEntitySpecialRenderer {
 			float scale) {
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
+		// GL11.glTranslatef((float) x + 0.5F, (float) y + 0.75F, (float) z +
+		// 0.5F);
+		// GL11.glScalef(0.5F, 0.5F, 0.5f);
 		if (((TileFldsmdfr) te).isActive())
 			Minecraft.getMinecraft().renderEngine.bindTexture(texture1);
 		else

@@ -90,6 +90,15 @@ public class GuiTerminal extends GuiContainer {
 			break;
 
 		}
+		if (tile.getRate() == 0)
+			lefM.enabled = false;
+		else
+			lefM.enabled = true;
+		if (tile.getRate() == 10)
+			rigM.enabled = false;
+		else
+			rigM.enabled = true;
+		// System.out.println("c: "+tile.getCount()+ " r: "+tile.getRate());
 
 	}
 
@@ -214,7 +223,8 @@ public class GuiTerminal extends GuiContainer {
 		long num = (long) Math.pow(2, (10 - tile.getRate())) * 20;
 		long x = (num - tile.getCooldown());
 		float ff = (float) x / ((float) num / 47F) + 18;
-
+		if (ff < 18)
+			ff = (ff % 18) + 47;
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
@@ -222,7 +232,7 @@ public class GuiTerminal extends GuiContainer {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 		tessellator.startDrawing(GL11.GL_QUADS);
-		tessellator.setColorRGBA(0, 205, 102, 255);
+		tessellator.setColorRGBA(0, 290- (int) (ff*4.9F), 102 , 255);
 		tessellator.addVertex(158, ff, 0);// lo
 		tessellator.addVertex(158, 65, 0);// lu
 		tessellator.addVertex(165, 65, 0);// ru
