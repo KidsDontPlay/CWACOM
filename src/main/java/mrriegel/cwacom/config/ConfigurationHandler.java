@@ -16,7 +16,7 @@ public class ConfigurationHandler {
 		waterCost = config.get("Common", "waterCost", 350,
 				"Cost of Water = this * saturation").getInt();
 		apple = config.get("Common", "goldenApple", false,
-				"enable golden apple").getBoolean();
+				"enable golden apple (ATTENTION: keep in mind this config is equal on server and client)").getBoolean();
 
 		if (config.hasChanged()) {
 			config.save();

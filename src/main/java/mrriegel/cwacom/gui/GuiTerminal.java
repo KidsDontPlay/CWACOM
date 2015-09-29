@@ -11,8 +11,10 @@ import mrriegel.cwacom.tile.TileFldsmdfr;
 import mrriegel.cwacom.tile.TileTerminal;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -46,6 +48,15 @@ public class GuiTerminal extends GuiContainer {
 		this.buttonList.add(lefM);
 		rigM = new GuiButton(3, 130 + guiLeft, 48 + guiTop, 20, 20, ">");
 		this.buttonList.add(rigM);
+		
+		if (tile.getRate() == 0)
+			lefM.enabled = false;
+		else
+			lefM.enabled = true;
+		if (tile.getRate() == 10)
+			rigM.enabled = false;
+		else
+			rigM.enabled = true;
 	}
 
 	@Override
@@ -110,8 +121,8 @@ public class GuiTerminal extends GuiContainer {
 				.currentTimeMillis() / 333 % (CWACOM.foodList.size() - 1)) + 1);
 
 		RenderItem r = new RenderItem();
-		r.renderItemIntoGUI(fontRendererObj, mc.renderEngine, st, 100, 20);
-
+		r.renderItemAndEffectIntoGUI(fontRendererObj, mc.renderEngine, st, 100, 20);
+	
 		String rat = String.valueOf((int) Math.pow(2, (10 - tile.getRate())))
 				+ " s";
 		if (tile.getRate() == 0)
@@ -168,7 +179,10 @@ public class GuiTerminal extends GuiContainer {
 			List list = new ArrayList();
 			int k = (width - xSize) / 2;
 			int l = (height - ySize) / 2;
-			list.add(st.getDisplayName());
+			if (tile.getCount() != 0)
+				list.add(st.getDisplayName());
+			else
+				list.add("Random");
 			GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
 			this.drawHoveringText(list, param1 - k, param2 - l, fontRendererObj);
@@ -232,7 +246,7 @@ public class GuiTerminal extends GuiContainer {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 		tessellator.startDrawing(GL11.GL_QUADS);
-		tessellator.setColorRGBA(0, 290- (int) (ff*4.9F), 102 , 255);
+		tessellator.setColorRGBA(0, 290 - (int) (ff * 4.9F), 102, 255);
 		tessellator.addVertex(158, ff, 0);// lo
 		tessellator.addVertex(158, 65, 0);// lu
 		tessellator.addVertex(165, 65, 0);// ru

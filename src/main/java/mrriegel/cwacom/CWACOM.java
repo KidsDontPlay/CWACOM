@@ -62,38 +62,25 @@ public class CWACOM {
 		Iterator<Item> f = GameData.getItemRegistry().iterator();
 		Item x = new Item();
 		foodList.add(new ItemStack(x));
+		ArrayList<String> done = new ArrayList<String>();
 		while (f.hasNext()) {
 			Item i = f.next();
 			if (i instanceof ItemFood) {
 				if (i.equals(Items.golden_apple) && !ConfigurationHandler.apple)
 					continue;
-				// if (i.getHasSubtypes() && event.getSide().isClient()) {
-				// i.getSubItems(i, null, foodList);
-				// } else
 				if (i.getHasSubtypes()) {
-					String name = null;
-					ArrayList<ItemStack>lis=new ArrayList<ItemStack>();
 					for (int in = 0; in < 16; in++) {
-						
-						lis.add(new ItemStack(i,1,in));
 						ItemStack ss = new ItemStack(i, 1, in);
-//						if (in == 0)
-//							name = ss.getUnlocalizedName();
-//						System.out.println("name: " + in + " " + name + " "
-//								+ "unlo: " + ss.getUnlocalizedName());
-//						if (in != 0 && name.equals(ss.getUnlocalizedName()))
-//							break;
-						foodList.add(ss);
-						// System.out.println("wack: " + in + " "
-						// + ss.getUnlocalizedName());
-						
-					}for(int z=0;z<lis.size();z++)
-					System.out.println("hoo: "+i+lis.get(z).getUnlocalizedName());
+						if (!done.contains(ss.getUnlocalizedName())) {
+							foodList.add(ss);
+							if (!(ss.getUnlocalizedName().contains("appleGold") && in == 0))
+								done.add(ss.getUnlocalizedName());
+						}
+					}
 				} else
 					foodList.add(new ItemStack(i));
 			}
 		}
-		System.out.println("ffsize: " + foodList.size());
 
 	}
 }
