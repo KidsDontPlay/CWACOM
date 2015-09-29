@@ -10,7 +10,6 @@ import mrriegel.cwacom.init.ModBlocks;
 import mrriegel.cwacom.init.ModItems;
 import mrriegel.cwacom.packet.PacketHandler;
 import mrriegel.cwacom.proxy.CommonProxy;
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
@@ -71,11 +70,16 @@ public class CWACOM {
 				if (i.getHasSubtypes()) {
 					for (int in = 0; in < 16; in++) {
 						ItemStack ss = new ItemStack(i, 1, in);
-						if (!done.contains(ss.getUnlocalizedName())) {
-							foodList.add(ss);
-							if (!(ss.getUnlocalizedName().contains("appleGold") && in == 0))
-								done.add(ss.getUnlocalizedName());
+						try {
+							if (!done.contains(ss.getUnlocalizedName())) {
+								foodList.add(ss);
+								if (!(ss.getUnlocalizedName().contains(
+										"appleGold") && in == 0))
+									done.add(ss.getUnlocalizedName());
+							}
+						} catch (Exception e) {
 						}
+						
 					}
 				} else
 					foodList.add(new ItemStack(i));
