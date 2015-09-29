@@ -119,7 +119,10 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 								tf.zCoord).isChunkLoaded
 						&& player.worldObj.provider.dimensionId == worldObj.provider.dimensionId) {
 					worldObj.spawnEntityInWorld(ei);
-					ei.setVelocity(0D, -10D, 0D);
+					//ei.setVelocity(0D, -10D, 0D);
+					ei.motionX=0D;
+					ei.motionY=-10D;
+					ei.motionZ=0D;
 
 					en.modifyEnergyStored(-health * ConfigurationHandler.rfCost);
 					tf.drain(ForgeDirection.UNKNOWN, health
