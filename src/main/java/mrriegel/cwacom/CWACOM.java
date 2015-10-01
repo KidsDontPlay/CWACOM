@@ -71,20 +71,20 @@ public class CWACOM {
 					for (int in = 0; in < 16; in++) {
 						ItemStack ss = new ItemStack(i, 1, in);
 						try {
-							if (!done.contains(ss.getUnlocalizedName())) {
+							if (!done.contains(ss.getUnlocalizedName())
+									&& ss.getUnlocalizedName() != null) {
 								foodList.add(ss);
 								if (!(ss.getUnlocalizedName().contains(
 										"appleGold") && in == 0))
 									done.add(ss.getUnlocalizedName());
 							}
-						} catch (Exception e) {
+						} catch (ArrayIndexOutOfBoundsException e) {
 						}
-						
+
 					}
 				} else
 					foodList.add(new ItemStack(i));
 			}
 		}
-
 	}
 }

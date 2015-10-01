@@ -11,10 +11,8 @@ import mrriegel.cwacom.tile.TileFldsmdfr;
 import mrriegel.cwacom.tile.TileTerminal;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -48,7 +46,7 @@ public class GuiTerminal extends GuiContainer {
 		this.buttonList.add(lefM);
 		rigM = new GuiButton(3, 130 + guiLeft, 48 + guiTop, 20, 20, ">");
 		this.buttonList.add(rigM);
-		
+
 		if (tile.getRate() == 0)
 			lefM.enabled = false;
 		else
@@ -121,8 +119,9 @@ public class GuiTerminal extends GuiContainer {
 				.currentTimeMillis() / 333 % (CWACOM.foodList.size() - 1)) + 1);
 
 		RenderItem r = new RenderItem();
-		r.renderItemAndEffectIntoGUI(fontRendererObj, mc.renderEngine, st, 100, 20);
-	
+		r.renderItemAndEffectIntoGUI(fontRendererObj, mc.renderEngine, st, 100,
+				20);
+
 		String rat = String.valueOf((int) Math.pow(2, (10 - tile.getRate())))
 				+ " s";
 		if (tile.getRate() == 0)

@@ -31,7 +31,7 @@ public class BlockFldsmdfr extends BlockContainer {
 		super(Material.iron);
 		this.setCreativeTab(CreativeTab.tab1);
 		this.setBlockName(Reference.MOD_ID + ":" + "fldsmdfr");
-		//this.setBlockBounds(0.0F, -1.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+		// this.setBlockBounds(0.0F, -1.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	@Override

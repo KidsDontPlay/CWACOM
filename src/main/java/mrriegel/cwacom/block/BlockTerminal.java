@@ -43,6 +43,8 @@ public class BlockTerminal extends BlockContainer {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
+		if (side == 3 && meta == 0)
+			return this.front;
 		return side == 1 ? this.blockIcon : (side == 0 ? this.blockIcon
 				: (side != meta ? this.blockIcon : this.front));
 	}

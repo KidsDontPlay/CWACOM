@@ -81,10 +81,7 @@ public class TileFldsmdfr extends TileEntity implements IFluidHandler {
 
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid) {
-		if (fluid.equals(FluidRegistry.WATER))
-			return true;
-		else
-			return false;
+		return fluid.equals(FluidRegistry.WATER);
 	}
 
 	public boolean canFill(ForgeDirection from, Fluid fluid, int amount) {
