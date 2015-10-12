@@ -5,6 +5,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -53,6 +54,16 @@ public class TileFldsmdfr extends TileEntity implements IFluidHandler {
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
 		readFromNBT(pkt.func_148857_g());
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	}
+
+	@Override
+	public AxisAlignedBB getRenderBoundingBox() {
+		double renderExtention = 1.0d;
+		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(xCoord
+				- renderExtention, yCoord - renderExtention, zCoord
+				- renderExtention, xCoord + 1 + renderExtention, yCoord + 1
+				+ renderExtention, zCoord + 1 + renderExtention);
+		return bb;
 	}
 
 	@Override

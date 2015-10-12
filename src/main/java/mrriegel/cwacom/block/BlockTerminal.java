@@ -27,6 +27,8 @@ public class BlockTerminal extends BlockContainer {
 
 	public BlockTerminal() {
 		super(Material.iron);
+		this.setHardness(3.0F);
+		this.setResistance(8.0F);
 		this.setCreativeTab(CreativeTab.tab1);
 		this.setBlockName(Reference.MOD_ID + ":" + "terminal");
 	}

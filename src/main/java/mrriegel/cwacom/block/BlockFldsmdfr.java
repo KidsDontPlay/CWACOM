@@ -1,8 +1,11 @@
 package mrriegel.cwacom.block;
 
+import java.util.Random;
+
 import mrriegel.cwacom.CWACOM;
 import mrriegel.cwacom.CreativeTab;
 import mrriegel.cwacom.Reference;
+import mrriegel.cwacom.init.ModBlocks;
 import mrriegel.cwacom.init.ModItems;
 import mrriegel.cwacom.proxy.CommonProxy;
 import mrriegel.cwacom.tile.TileFldsmdfr;
@@ -12,6 +15,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -30,8 +34,10 @@ public class BlockFldsmdfr extends BlockContainer {
 	public BlockFldsmdfr() {
 		super(Material.iron);
 		this.setCreativeTab(CreativeTab.tab1);
+		this.setHardness(3.0F);
+		this.setResistance(8.0F);
 		this.setBlockName(Reference.MOD_ID + ":" + "fldsmdfr");
-		// this.setBlockBounds(0.0F, -1.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+//		this.setBlockBounds(0, -1, 0, 1, 1, 1);
 	}
 
 	@Override
@@ -93,7 +99,27 @@ public class BlockFldsmdfr extends BlockContainer {
 	}
 
 	@Override
+	public Item getItemDropped(int p_149650_1_, Random p_149650_2_,
+			int p_149650_3_) {
+		return Item.getItemFromBlock(ModBlocks.fldsmdfr);
+	}
+
+	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z,
+			EntityLivingBase player, ItemStack stack) {
+		setDirection(world, x, y, z, player, stack);
+		if (world.isAirBlock(x, y + 1, z) && world.setBlock(x, y + 1, z, this)) {
+			setDirection(world, x, y + 1, z, player, stack);
+			world.setBlockToAir(x, y, z);
+		} else {
+			world.setBlockToAir(x, y, z);
+			((EntityPlayer) player).inventory
+					.addItemStackToInventory(new ItemStack(this));
+		}
+
+	}
+
+	private void setDirection(World world, int x, int y, int z,
 			EntityLivingBase player, ItemStack stack) {
 		TileFldsmdfr tile = (TileFldsmdfr) world.getTileEntity(x, y, z);
 		int l = MathHelper
@@ -122,7 +148,6 @@ public class BlockFldsmdfr extends BlockContainer {
 			tile.setAngle(270F);
 			world.markBlockForUpdate(x, y, z);
 		}
-
 	}
 
 	@Override
