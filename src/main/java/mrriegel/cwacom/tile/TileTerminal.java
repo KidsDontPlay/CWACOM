@@ -71,7 +71,7 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 		}
 		if (worldObj.isRemote)
 			return;
-		if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) > 0
+		if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)
 				|| tf == null
 				|| tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid == null) {
 			if (tf != null) {
