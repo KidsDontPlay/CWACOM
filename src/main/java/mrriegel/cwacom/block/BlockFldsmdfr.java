@@ -37,7 +37,7 @@ public class BlockFldsmdfr extends BlockContainer {
 		this.setHardness(3.0F);
 		this.setResistance(8.0F);
 		this.setBlockName(Reference.MOD_ID + ":" + "fldsmdfr");
-//		this.setBlockBounds(0, -1, 0, 1, 1, 1);
+		// this.setBlockBounds(0, -1, 0, 1, 1, 1);
 	}
 
 	@Override

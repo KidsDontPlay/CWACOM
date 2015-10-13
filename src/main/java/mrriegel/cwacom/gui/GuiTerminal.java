@@ -202,8 +202,8 @@ public class GuiTerminal extends GuiContainer {
 			List list = new ArrayList();
 			int k = (width - xSize) / 2;
 			int l = (height - ySize) / 2;
-			list.add(tile.getEn().getEnergyStored() + " / "
-					+ tile.getEn().getMaxEnergyStored());
+			list.add(tile.getEn().getEnergyStored() + " RF / "
+					+ tile.getEn().getMaxEnergyStored() + " RF");
 			GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
 			this.drawHoveringText(list, param1 - k, param2 - l, fontRendererObj);
@@ -216,12 +216,14 @@ public class GuiTerminal extends GuiContainer {
 			if (tf != null)
 				if (tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid != null)
 					list.add(tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid.amount
-							+ " / "
-							+ tf.getTankInfo(ForgeDirection.UNKNOWN)[0].capacity);
+							+ " mB / "
+							+ tf.getTankInfo(ForgeDirection.UNKNOWN)[0].capacity
+							+ " mB");
 				else
-					list.add("0"
+					list.add("0 mB"
 							+ " / "
-							+ tf.getTankInfo(ForgeDirection.UNKNOWN)[0].capacity);
+							+ tf.getTankInfo(ForgeDirection.UNKNOWN)[0].capacity
+							+ " mB");
 			else
 				list.add("No connected Fldsmdfr");
 			GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
@@ -230,7 +232,7 @@ public class GuiTerminal extends GuiContainer {
 			GL11.glPopAttrib();
 			GL11.glPopAttrib();
 		}
-		if (tile.getRate() == 0)
+		if (tile.getRate() == 0 || tile.getEnergyStored(null) <= 0)
 			return;
 
 		long num = (long) Math.pow(2, (10 - tile.getRate())) * 20;
