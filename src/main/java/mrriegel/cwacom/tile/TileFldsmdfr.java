@@ -1,5 +1,6 @@
 package mrriegel.cwacom.tile;
 
+import mrriegel.cwacom.config.ConfigurationHandler;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -17,7 +18,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileFldsmdfr extends TileEntity implements IFluidHandler {
 
-	FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 16);
+	FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * ConfigurationHandler.waterCapacity);
 	private float angle;
 	private boolean active;
 

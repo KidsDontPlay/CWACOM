@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mrriegel.cwacom.Reference;
+import mrriegel.cwacom.config.ConfigurationHandler;
 import mrriegel.cwacom.tile.TileFldsmdfr;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.Tessellator;
@@ -44,7 +45,7 @@ public class GuiFldsmdfr extends GuiContainer {
 		tessellator.setColorRGBA(166, 166, 166, 255);
 		double s = 65.D;
 		if (tile.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid != null)
-			s = -47.D / 16000.D
+			s = -47.D / ((double) ConfigurationHandler.waterCapacity * 1000)
 					* tile.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid.amount
 					+ 65.D;
 		tessellator.addVertex(18, 18, 0);// lo

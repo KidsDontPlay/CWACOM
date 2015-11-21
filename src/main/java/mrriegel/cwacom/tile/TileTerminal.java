@@ -20,7 +20,8 @@ import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 
 public class TileTerminal extends TileEntity implements IEnergyReceiver {
-	private EnergyStorage en = new EnergyStorage(200000, 2000, 0);
+	private EnergyStorage en = new EnergyStorage(
+			ConfigurationHandler.rfCapacity, 2000, 0);
 	private TileFldsmdfr tf;
 	private int tfX, tfY, tfZ, count, rate;
 	long cooldown;

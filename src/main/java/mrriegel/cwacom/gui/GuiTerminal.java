@@ -5,6 +5,7 @@ import java.util.List;
 
 import mrriegel.cwacom.CWACOM;
 import mrriegel.cwacom.Reference;
+import mrriegel.cwacom.config.ConfigurationHandler;
 import mrriegel.cwacom.packet.PacketHandler;
 import mrriegel.cwacom.packet.TerminalPacket;
 import mrriegel.cwacom.tile.TileFldsmdfr;
@@ -140,7 +141,8 @@ public class GuiTerminal extends GuiContainer {
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawing(GL11.GL_QUADS);
 		tessellator.setColorRGBA(166, 166, 166, 255);
-		double s = -47.D / 200000.D * tile.getEn().getEnergyStored() + 65.D;
+		double s = -47.D / ((double) ConfigurationHandler.rfCapacity)
+				* tile.getEn().getEnergyStored() + 65.D;
 		tessellator.addVertex(18, 18, 0);// lo
 		tessellator.addVertex(18, s, 0);// lu
 		tessellator.addVertex(30, s, 0);// ru
@@ -153,7 +155,7 @@ public class GuiTerminal extends GuiContainer {
 			double he = 65.D;
 			if (tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid != null)
 				he = -47.D
-						/ 16000.D
+						/ ((double) ConfigurationHandler.waterCapacity * 1000)
 						* tf.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid.amount
 						+ 65.D;
 			tessellator.addVertex(42, 18, 0);// lo
