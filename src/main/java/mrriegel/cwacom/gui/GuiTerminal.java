@@ -63,7 +63,7 @@ public class GuiTerminal extends GuiContainer {
 		switch (button.id) {
 		case 0:
 			if (tile.getCount() <= 0)
-				tile.setCount(CWACOM.foodList.size() - 1);
+				tile.setCount(CWACOM.instance.foodList.size() - 1);
 			else
 				tile.setCount(tile.getCount() - 1);
 			PacketHandler.INSTANCE
@@ -72,7 +72,7 @@ public class GuiTerminal extends GuiContainer {
 			break;
 
 		case 1:
-			if (tile.getCount() >= CWACOM.foodList.size() - 1)
+			if (tile.getCount() >= CWACOM.instance.foodList.size() - 1)
 				tile.setCount(0);
 			else
 				tile.setCount(tile.getCount() + 1);
@@ -115,9 +115,11 @@ public class GuiTerminal extends GuiContainer {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int param1, int param2) {
 		fontRendererObj.drawString("Terminal", 8, 6, 4210752);
-		ItemStack st = tile.getCount() != 0 ? CWACOM.foodList.get(tile
-				.getCount()) : CWACOM.foodList.get((int) (System
-				.currentTimeMillis() / 333 % (CWACOM.foodList.size() - 1)) + 1);
+		ItemStack st = tile.getCount() != 0 ? CWACOM.instance.foodList.get(tile
+				.getCount())
+				: CWACOM.instance.foodList.get((int) (System
+						.currentTimeMillis() / 333 % (CWACOM.instance.foodList
+						.size() - 1)) + 1);
 
 		RenderItem r = new RenderItem();
 		r.renderItemAndEffectIntoGUI(fontRendererObj, mc.renderEngine, st, 100,

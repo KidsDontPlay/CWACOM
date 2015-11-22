@@ -98,17 +98,15 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 
 			Random rand = new Random();
 			if (cooldown == 0) {
-				EntityItem ei = new EntityItem(
-						worldObj,
-						c.xPosition * 16 + (rand.nextInt(16) + 1)
+				EntityItem ei = new EntityItem(worldObj, c.xPosition * 16
+						+ (rand.nextInt(16) + 1) + rand.nextDouble() - 0.5D,
+						300, c.zPosition * 16 + (rand.nextInt(16) + 1)
 								+ rand.nextDouble() - 0.5D,
-						300,
-						c.zPosition * 16 + (rand.nextInt(16) + 1)
-								+ rand.nextDouble() - 0.5D,
-						CWACOM.foodList
-								.get(count == 0 ? new Random()
-										.nextInt(CWACOM.foodList.size() - 1) + 1
-										: count).copy());
+						CWACOM.instance.foodList.get(
+								count == 0 ? new Random()
+										.nextInt(CWACOM.instance.foodList
+												.size() - 1) + 1 : count)
+								.copy());
 				int health = ((ItemFood) ei.getEntityItem().getItem())
 						.func_150905_g(ei.getEntityItem().copy());
 				if (health * ConfigurationHandler.rfCost <= getEnergyStored(ForgeDirection.UNKNOWN)
