@@ -60,20 +60,28 @@ public class BlockTerminal extends BlockContainer {
 	public boolean onBlockActivated(World world, int x, int y, int z,
 			EntityPlayer player, int p_149727_6_, float p_149727_7_,
 			float p_149727_8_, float p_149727_9_) {
-		if (player.getHeldItem() == null
-				|| !player.getHeldItem().getItem().equals(ModItems.rc)) {
+		if (!world.isRemote
+				&& CWACOM.instance.isPlayerOP(player)
+				&& (player.getHeldItem() == null || !player.getHeldItem()
+						.getItem().equals(ModItems.rc))) {
 			player.openGui(CWACOM.instance, CommonProxy.TERMINAL, world, x, y,
 					z);
 			return true;
 		}
-		return false;
+		return true;
 	}
 
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z,
 			EntityLivingBase player, ItemStack stack) {
+		if (player instanceof EntityPlayer
+				&& !CWACOM.instance.isPlayerOP((EntityPlayer) player)) {
+			world.setBlockToAir(x, y, z);
+			((EntityPlayer) player).inventory
+					.addItemStackToInventory(new ItemStack(this));
+		}
 		int l = MathHelper
-				.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+				.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 
 		if (l == 0) {
 			world.setBlockMetadataWithNotify(x, y, z, 2, 2);

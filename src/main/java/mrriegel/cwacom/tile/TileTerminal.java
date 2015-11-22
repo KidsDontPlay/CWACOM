@@ -90,6 +90,8 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 		cooldown = worldObj.getTotalWorldTime()
 				% ((long) Math.pow(2, (10 - rate)) * 20);
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		if (count >= CWACOM.instance.foodList.size())
+			count = CWACOM.instance.foodList.size() - 1;
 		for (Object o : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
 			EntityPlayer player = (EntityPlayer) o;
 			Chunk c = worldObj.getChunkFromBlockCoords(
@@ -103,9 +105,9 @@ public class TileTerminal extends TileEntity implements IEnergyReceiver {
 						300, c.zPosition * 16 + (rand.nextInt(16) + 1)
 								+ rand.nextDouble() - 0.5D,
 						CWACOM.instance.foodList.get(
-								count == 0 ? new Random()
+								count == 0 ? (rand
 										.nextInt(CWACOM.instance.foodList
-												.size() - 1) + 1 : count)
+												.size() - 1) + 1) : count)
 								.copy());
 				int health = ((ItemFood) ei.getEntityItem().getItem())
 						.func_150905_g(ei.getEntityItem().copy());

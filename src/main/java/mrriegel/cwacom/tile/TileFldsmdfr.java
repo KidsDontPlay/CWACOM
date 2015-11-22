@@ -18,7 +18,8 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileFldsmdfr extends TileEntity implements IFluidHandler {
 
-	FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * ConfigurationHandler.waterCapacity);
+	FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME
+			* ConfigurationHandler.waterCapacity);
 	private float angle;
 	private boolean active;
 

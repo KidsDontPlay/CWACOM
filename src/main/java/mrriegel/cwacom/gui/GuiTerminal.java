@@ -143,7 +143,7 @@ public class GuiTerminal extends GuiContainer {
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawing(GL11.GL_QUADS);
 		tessellator.setColorRGBA(166, 166, 166, 255);
-		double s = -47.D / ((double) ConfigurationHandler.rfCapacity)
+		double s = -47.D / (ConfigurationHandler.rfCapacity)
 				* tile.getEn().getEnergyStored() + 65.D;
 		tessellator.addVertex(18, 18, 0);// lo
 		tessellator.addVertex(18, s, 0);// lu
@@ -241,7 +241,7 @@ public class GuiTerminal extends GuiContainer {
 
 		long num = (long) Math.pow(2, (10 - tile.getRate())) * 20;
 		long x = (num - tile.getCooldown());
-		float ff = (float) x / ((float) num / 47F) + 18;
+		float ff = x / (num / 47F) + 18;
 		if (ff < 18)
 			ff = (ff % 18) + 47;
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

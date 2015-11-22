@@ -89,13 +89,15 @@ public class BlockFldsmdfr extends BlockContainer {
 			}
 			return false;
 		}
-		if (player.getHeldItem() == null
-				|| !player.getHeldItem().getItem().equals(ModItems.rc)) {
+		if (!world.isRemote
+				&& CWACOM.instance.isPlayerOP(player)
+				&& (player.getHeldItem() == null || !player.getHeldItem()
+						.getItem().equals(ModItems.rc))) {
 			player.openGui(CWACOM.instance, CommonProxy.F, world, x, y, z);
 			return true;
 		}
 
-		return false;
+		return true;
 	}
 
 	@Override
@@ -107,6 +109,13 @@ public class BlockFldsmdfr extends BlockContainer {
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z,
 			EntityLivingBase player, ItemStack stack) {
+		if (player instanceof EntityPlayer
+				&& !CWACOM.instance.isPlayerOP((EntityPlayer) player)) {
+			world.setBlockToAir(x, y, z);
+			((EntityPlayer) player).inventory
+					.addItemStackToInventory(new ItemStack(this));
+			return;
+		}
 		setDirection(world, x, y, z, player, stack);
 		if (world.isAirBlock(x, y + 1, z) && world.setBlock(x, y + 1, z, this)) {
 			setDirection(world, x, y + 1, z, player, stack);
@@ -123,7 +132,7 @@ public class BlockFldsmdfr extends BlockContainer {
 			EntityLivingBase player, ItemStack stack) {
 		TileFldsmdfr tile = (TileFldsmdfr) world.getTileEntity(x, y, z);
 		int l = MathHelper
-				.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+				.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 
 		if (l == 0) {
 			world.setBlockMetadataWithNotify(x, y, z, 2, 2);
@@ -160,6 +169,7 @@ public class BlockFldsmdfr extends BlockContainer {
 		return false;
 	}
 
+	@Override
 	public boolean renderAsNormalBlock() {
 		return false;
 	}

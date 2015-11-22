@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import mrriegel.cwacom.config.ConfigurationHandler;
@@ -14,12 +15,11 @@ import mrriegel.cwacom.init.ModBlocks;
 import mrriegel.cwacom.init.ModItems;
 import mrriegel.cwacom.packet.PacketHandler;
 import mrriegel.cwacom.proxy.CommonProxy;
-import net.minecraft.init.Items;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
-import scala.actors.threadpool.Arrays;
 
 import com.google.gson.Gson;
 
@@ -44,24 +44,49 @@ public class CWACOM {
 	public ArrayList<ItemStack> foodList;
 	public ArrayList<ItemStack> blackList;
 	public ArrayList<ItemStack> whiteList;
+	public ArrayList<String> ops;
+
+	private File configDir;
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) throws IOException {
-		File configDir = new File(event.getModConfigurationDirectory(),
-				"CWACOM");
-		File configFile = new File(configDir, "cwacom.cfg");
+		configDir = new File(event.getModConfigurationDirectory(), "CWACOM");
+		File configFile = new File(configDir, "config.cfg");
 		ConfigurationHandler.config = new Configuration(configFile);
 		ConfigurationHandler.config.load();
 		ConfigurationHandler.refreshConfig();
 
+		File opFile = new File(configDir, "ops.json");
+		if (!opFile.exists()) {
+			opFile.createNewFile();
+			FileWriter fw = new FileWriter(opFile);
+			fw.write(new Gson().toJson(new ArrayList<String>()));
+			fw.close();
+		}
+		ops = new Gson().fromJson(new BufferedReader(new FileReader(opFile)),
+				ArrayList.class);
+
+		ModBlocks.init();
+		ModItems.init();
+		PacketHandler.init();
+		proxy.registerRenderers();
+
+	}
+
+	@Mod.EventHandler
+	public void init(FMLInitializationEvent event) throws IOException {
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new CommonProxy());
+		CraftingRecipes.init();
 		File blackFile = new File(configDir, "blackList.json");
 		if (!blackFile.exists()) {
 			blackFile.createNewFile();
 			FileWriter fw = new FileWriter(blackFile);
 			fw.write(new Gson().toJson(new ArrayList<String>(Arrays
 					.asList(new String[] { "minecraft:golden_apple:0",
-							"minecraft:golden_apple:1" }))));
-
+							"minecraft:golden_apple:1",
+							"minecraft:poisonous_potato:0",
+							"DraconicEvolution:dezilsMarshmallow:0",
+							"Botania:manaCookie:0" }))));
 			fw.close();
 		}
 		ArrayList<String> blackListS = new Gson().fromJson(new BufferedReader(
@@ -72,10 +97,12 @@ public class CWACOM {
 				throw new RuntimeException("blacklist not correct");
 			ItemStack item = GameRegistry.findItemStack(s.split(":")[0],
 					s.split(":")[1], 1);
-			item.setItemDamage(Integer.valueOf(s.split(":")[2]));
-			if (item != null)
+			if (item != null) {
+				item.setItemDamage(Integer.valueOf(s.split(":")[2]));
 				blackList.add(item);
+			}
 		}
+
 		File whiteFile = new File(configDir, "whiteList.json");
 		if (!whiteFile.exists()) {
 			whiteFile.createNewFile();
@@ -94,22 +121,11 @@ public class CWACOM {
 				throw new RuntimeException("whitelist not correct");
 			ItemStack item = GameRegistry.findItemStack(s.split(":")[0],
 					s.split(":")[1], 1);
-			item.setItemDamage(Integer.valueOf(s.split(":")[2]));
-			if (item != null)
+			if (item != null) {
+				item.setItemDamage(Integer.valueOf(s.split(":")[2]));
 				whiteList.add(item);
+			}
 		}
-
-		ModBlocks.init();
-		ModItems.init();
-		PacketHandler.init();
-		proxy.registerRenderers();
-
-	}
-
-	@Mod.EventHandler
-	public void init(FMLInitializationEvent event) {
-		NetworkRegistry.INSTANCE.registerGuiHandler(this, new CommonProxy());
-		CraftingRecipes.init();
 
 	}
 
@@ -117,6 +133,7 @@ public class CWACOM {
 	public void postInit(FMLPostInitializationEvent event) {
 		foodList = new ArrayList<ItemStack>();
 		Iterator<Item> f = GameData.getItemRegistry().iterator();
+		
 		Item x = new Item();
 		foodList.add(new ItemStack(x));
 		ArrayList<String> done = new ArrayList<String>();
@@ -150,14 +167,15 @@ public class CWACOM {
 					iter.remove();
 				}
 			}
+		int i = 0;
 		if (ConfigurationHandler.whitelist)
 			for (Iterator<ItemStack> iter = foodList.listIterator(); iter
 					.hasNext();) {
-				if (!contains(iter.next(), whiteList)) {
+				if (!contains(iter.next(), whiteList) && i > 0) {
 					iter.remove();
 				}
+				i++;
 			}
-		System.out.println("ooo: "+foodList.size()+".."+foodList);
 	}
 
 	private boolean contains(ItemStack ss, ArrayList<ItemStack> blackList2) {
@@ -165,5 +183,10 @@ public class CWACOM {
 			if (s.isItemEqual(ss))
 				return true;
 		return false;
+	}
+
+	public boolean isPlayerOP(EntityPlayer player) {
+		return !ConfigurationHandler.ops
+				|| ops.contains(player.getDisplayName());
 	}
 }

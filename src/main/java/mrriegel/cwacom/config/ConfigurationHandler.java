@@ -12,6 +12,7 @@ public class ConfigurationHandler {
 	public static int waterCapacity;
 	public static boolean blacklist;
 	public static boolean whitelist;
+	public static boolean ops;
 
 	public static void refreshConfig() {
 		rfCost = config.get("Common", "rfCost", 5000,
@@ -26,6 +27,7 @@ public class ConfigurationHandler {
 				"activate blacklist").getBoolean();
 		whitelist = config.get("Common", "whitelist", false,
 				"activate whitelist").getBoolean();
+		ops = config.get("Common", "ops", false, "activate ops").getBoolean();
 		if (config.hasChanged()) {
 			config.save();
 		}
